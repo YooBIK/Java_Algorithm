@@ -18,7 +18,7 @@ public class BOJ1991 {
 
 
         if (mode == 0) {
-            stringBuilder.append((char)(current + 'A'));
+            stringBuilder.append((char) (current + 'A'));
             if (tree[current][0] != -1) {
                 printTree(tree[current][0], 0);
             }
@@ -29,7 +29,7 @@ public class BOJ1991 {
             if (tree[current][0] != -1) {
                 printTree(tree[current][0], 1);
             }
-            stringBuilder.append((char)(current + 'A'));
+            stringBuilder.append((char) (current + 'A'));
             if (tree[current][1] != -1) {
                 printTree(tree[current][1], 1);
             }
@@ -40,7 +40,7 @@ public class BOJ1991 {
             if (tree[current][1] != -1) {
                 printTree(tree[current][1], 2);
             }
-            stringBuilder.append((char)(current + 'A'));
+            stringBuilder.append((char) (current + 'A'));
         }
 
     }

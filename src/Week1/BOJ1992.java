@@ -3,12 +3,10 @@ package Week1;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class BOJ1992 {
 
     static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-    static StringTokenizer stringTokenizer;
     static StringBuilder stringBuilder = new StringBuilder();
 
     static char[][] map;
@@ -47,7 +45,7 @@ public class BOJ1992 {
             char[] chars = bufferedReader.readLine().toCharArray();
             map[i] = chars;
         }
-        quadTree(N,0,0);
+        quadTree(N, 0, 0);
         System.out.println(stringBuilder);
     }
 }
