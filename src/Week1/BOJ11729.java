@@ -1,6 +1,5 @@
 package Week1;
 
-import java.io.BufferedReader;
 import java.util.Scanner;
 
 public class BOJ11729 {
@@ -9,6 +8,7 @@ public class BOJ11729 {
     static StringBuilder stringBuilder = new StringBuilder();
     static int N;
     static int count = 0;
+
     public static void hanoi(int plates, int start, int end, int temp) {
         if (plates == 1) {
             stringBuilder.append(start).append(" ").append(end).append("\n");
@@ -24,7 +24,7 @@ public class BOJ11729 {
 
     public static void main(String[] args) {
         N = scanner.nextInt();
-        hanoi(N,1,3,2);
+        hanoi(N, 1, 3, 2);
         System.out.println(count);
         System.out.println(stringBuilder);
     }
