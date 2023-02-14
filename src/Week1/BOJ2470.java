@@ -41,7 +41,6 @@ public class BOJ2470 {
 		long result2 = list.get(right);
 		long minGap = Math.abs(result1 + result2);
 		while (left < right) {
-
 			if (Math.abs(list.get(left) + list.get(right)) < minGap) {
 				minGap = Math.abs(list.get(left) + list.get(right));
 				result1 = list.get(left);

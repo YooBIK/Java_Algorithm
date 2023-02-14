@@ -24,14 +24,12 @@ class Pair implements Comparable<Pair> {
 		}
 		return Integer.compare(this.end, o.end);
 	}
-
 }
 
 public class BOJ1931 {
 
 	static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer stringTokenizer;
-	static StringBuilder stringBuilder = new StringBuilder();
 
 	public static void main(String[] args) throws IOException {
 		int T = Integer.parseInt(bufferedReader.readLine());
