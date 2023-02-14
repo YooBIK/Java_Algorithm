@@ -30,7 +30,7 @@ public class BOJ2346 {
 			deque.addLast(new Pair(i, Integer.parseInt(stringTokenizer.nextToken())));
 		}
 
-		while (!deque.isEmpty()) {
+		while (true) {
 			Pair curPair = deque.pollFirst();
 			stringBuilder.append(curPair.index).append(" ");
 
