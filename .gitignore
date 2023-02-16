@@ -188,7 +188,7 @@ modules.xml
 ### Java ###
 # Compiled class file
 *.class
-
+out/
 # Log file
 *.log
 
