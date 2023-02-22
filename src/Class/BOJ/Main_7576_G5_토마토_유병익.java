@@ -19,7 +19,6 @@ public class Main_7576_G5_토마토_유병익 {
 	static int[] dirCol = { -1, 1, 0, 0 };
 
 	static int[][] map;
-	static int[][] visit;
 
 	public static void main(String[] args) throws IOException {
 
@@ -28,7 +27,6 @@ public class Main_7576_G5_토마토_유병익 {
 		R = Integer.parseInt(stringTokenizer.nextToken());
 
 		map = new int[R][C];
-		visit = new int[R][C];
 		List<int[]> startPositions = new ArrayList<>();
 		for (int i = 0; i < R; i++) {
 			stringTokenizer = new StringTokenizer(bufferedReader.readLine());
@@ -52,7 +50,7 @@ public class Main_7576_G5_토마토_유병익 {
 					return -1;
 				}
 
-				maxValue = Math.max(maxValue, visit[i][j]);
+				maxValue = Math.max(maxValue, map[i][j]);
 			}
 		}
 		return maxValue - 1;
@@ -63,7 +61,6 @@ public class Main_7576_G5_토마토_유병익 {
 		for (int i = 0; i < startPositions.size(); i++) {
 			int[] curPosition = startPositions.get(i);
 			queue.offer(curPosition);
-			visit[curPosition[0]][curPosition[1]]++;
 		}
 
 		while (!queue.isEmpty()) {
@@ -75,8 +72,7 @@ public class Main_7576_G5_토마토_유병익 {
 				int newRow = curRow + dirRow[i];
 				int newCol = curCol + dirCol[i];
 				if (check(newRow, newCol)) {
-					map[newRow][newCol] = 1;
-					visit[newRow][newCol] = visit[curRow][curCol] + 1;
+					map[newRow][newCol] = map[curRow][curCol] + 1;
 					queue.offer(new int[] { newRow, newCol });
 				}
 			}
@@ -84,7 +80,7 @@ public class Main_7576_G5_토마토_유병익 {
 	}
 
 	private static boolean check(int row, int col) {
-		return row >= 0 && row < R && col >= 0 && col < C && map[row][col] == 0 && visit[row][col] == 0;
+		return row >= 0 && row < R && col >= 0 && col < C && map[row][col] == 0;
 	}
 
 }
