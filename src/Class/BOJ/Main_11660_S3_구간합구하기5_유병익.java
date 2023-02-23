@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Main_11659_S3_구간합구하기5_유병익 {
+public class Main_11660_S3_구간합구하기5_유병익 {
 
 	static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer stringTokenizer;
