@@ -8,7 +8,9 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 /**
- * #풀이 방법 - 시작 컴퓨터는 1번 컴퓨터임 - 연결 정보를 2차원 배열로 변환해서 연결 여부를 확인 - bfs 사용
+ * #풀이 방법 - 시작 컴퓨터는 1번 컴퓨터임 
+ * - 연결 정보를 2차원 배열로 변환해서 연결 여부를 확인 
+ * - bfs 사용, queue에 offer될 때 마다 결과값 증가
  */
 public class BOJ2606 {
 
@@ -35,7 +37,6 @@ public class BOJ2606 {
 		}
 		bfs(0);
 		System.out.println(result);
-
 	}
 
 	private static void bfs(int start) {
