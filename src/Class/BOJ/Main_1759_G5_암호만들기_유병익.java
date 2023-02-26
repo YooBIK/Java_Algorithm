@@ -36,13 +36,13 @@ public class Main_1759_G5_암호만들기_유병익 {
         }
         select(1, 2);
         List<List<Character>> resultList = new ArrayList<>(resultSet);
-        for(int i=0;i<resultList.size();i++){
+        for (int i = 0; i < resultList.size(); i++) {
             Collections.sort(resultList.get(i));
         }
 
         Collections.sort(resultList, (o1, o2) -> o1.toString().compareTo(o2.toString()));
-        for(List<Character> list : resultList){
-            for(char c : list){
+        for (List<Character> list : resultList) {
+            for (char c : list) {
                 stringBuilder.append(c);
             }
             stringBuilder.append("\n");
@@ -75,8 +75,6 @@ public class Main_1759_G5_암호만들기_유병익 {
             combinationVowel(depth + 1, i + 1, targetDepth, tempList);
             tempList.remove(tempList.size() - 1);
         }
-
-
     }
 
     public static void combinationConsonant(int depth, int startIndex, int targetDepth, List<Character> tempList) {
