@@ -7,6 +7,12 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
+/**
+ * 풀이 방법
+ * - 단순히 bfs를 돌면 되는 문제 , 조금 특이하게 8방향 탐색을 해야한다.
+ * - 탐색하지 않은 땅(1)을 찾을 때 마다 섬의 개수를 증가
+ *      -> 이후 bfs를 진행 (이어져 있는 부분은 전부 방문처리)
+ */
 public class BOJ4963 {
 
     static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
