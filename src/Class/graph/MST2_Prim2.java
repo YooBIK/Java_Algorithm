@@ -82,6 +82,5 @@ public class MST2_Prim2 {
 			}
 		}
 		System.out.println(result);
-
 	}
 }
