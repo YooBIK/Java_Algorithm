@@ -1,4 +1,4 @@
-package Class;
+package Class.Live;
 
 import java.util.Arrays;
 import java.util.Scanner;
