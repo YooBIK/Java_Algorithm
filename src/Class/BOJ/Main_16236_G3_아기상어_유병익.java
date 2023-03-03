@@ -88,7 +88,7 @@ public class Main_16236_G3_아기상어_유병익 {
 				}
 			}
 
-			// 깊이가 바뀌지 않는다면 해당 위치에서 4방 탐색한다.
+			// 깊이가 바뀌지 않거나, 바뀌었어도 트리셋이 비어있다면(해당 거리까지 먹을 물고기가 없다는 뜻) 해당 위치에서 4방 탐색한다.
 			for (int i = 0; i < 4; i++) {
 				int newRow = curRow + dirRow[i];
 				int newCol = curCol + dirCol[i];
