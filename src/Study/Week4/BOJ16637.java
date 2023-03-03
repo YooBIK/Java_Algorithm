@@ -51,11 +51,15 @@ public class BOJ16637 {
 					sb.append(input[i]);
 				}
 			}
+			System.out.println(sb.toString());
+			return;
 		}
 
 		if (selectFlag) {
+			selected[depth] = true;
 			subset(depth + 1, false);
 		} else {
+			selected[depth] = false;
 			subset(depth + 1, true);
 			subset(depth + 1, false);
 		}
