@@ -3,9 +3,6 @@ package Study.Week4;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class BOJ17136 {
@@ -17,7 +14,6 @@ public class BOJ17136 {
 	static boolean findFlag = false;
 	static int[] paperArray = { 0, 5, 5, 5, 5, 5 };
 	static int[][] map = new int[10][10];
-	static List<Integer>[][] canDo = new ArrayList[10][10];
 
 	public static void main(String[] args) throws IOException {
 		for (int i = 0; i < 10; i++) {
@@ -30,18 +26,7 @@ public class BOJ17136 {
 			}
 		}
 
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				canDo[i][j] = new ArrayList<>();
-				for (int k = 5; k >= 1; k--) {
-					if (canCover(i, j, k)) {
-						canDo[i][j].add(k);
-					}
-				}
-			}
-		}
-
-		dfs(0,0);
+		dfs(0, 0);
 		if (answer == Integer.MAX_VALUE) {
 			System.out.println(-1);
 		} else {
@@ -51,27 +36,15 @@ public class BOJ17136 {
 	}
 
 	private static void dfs(int depth, int coveredArea) {
-		
-		if(depth > answer) {
+
+		if (depth > answer) {
 			return;
 		}
-		
+
 		if (coveredArea == paperArea) {
 			answer = Math.min(answer, depth);
 			return;
 		}
-
-//		System.out.println(depth);
-//		System.out.println(Arrays.toString(paperArray));
-//		for (int[] arr : map) {
-//			System.out.println(Arrays.toString(arr));
-//		}
-//		System.out.println();
-//		try {
-//			Thread.sleep(500);
-//		} catch (InterruptedException e) {
-//			throw new RuntimeException(e);
-//		}
 
 		boolean flag = false;
 		for (int i = 0; i < 10; i++) {
