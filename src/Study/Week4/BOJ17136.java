@@ -6,9 +6,8 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 /**
- * 
- * 
- *
+ * 풀이 해당 위치를 덮을 수 있는 색종이로 덮는다 (가장 큰 색종이부터 덮어본다.) 덮을 수 있는 경우가 있다면 다음으로 덮을 구역을
+ * 탐색한다. 탐색이 끝났는데 덮은 영역의 수가 덮을 영역의 수와 일치하면 결과를 업데이트하고 아니면 그냥 종료해버린다.
  */
 public class BOJ17136 {
 
@@ -16,7 +15,6 @@ public class BOJ17136 {
 	static StringTokenizer stringTokenizer;
 	static int answer = Integer.MAX_VALUE;
 	static int paperArea = 0;
-	static boolean findFlag = false;
 	static int[] paperArray = { 0, 5, 5, 5, 5, 5 };
 	static int[][] map = new int[10][10];
 
@@ -51,13 +49,11 @@ public class BOJ17136 {
 			return;
 		}
 
-		boolean flag = false;
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				if (map[i][j] == 1) {
 					for (int size = 5; size >= 1; size--) {
-						if (canCover(i, j, size) && paperArray[size] > 0) {
-							flag = true;
+						if (canCover(i, j, size) && paperArray[size] > 0) { // 해당 사이즈의 종이로 덮을 수 있고, 종이가 남아 있다면,
 							cover(i, j, size);
 							paperArray[size]--;
 							dfs(depth + 1, coveredArea + (size * size));
@@ -65,15 +61,13 @@ public class BOJ17136 {
 							paperArray[size]++;
 						}
 					}
-					if (flag) {
-						return;
-					}
+					return;
 				}
 			}
 		}
 	}
 
-	private static void cover(int startRow, int startCol, int size) {
+	private static void cover(int startRow, int startCol, int size) { // 덮기
 		for (int i = startRow; i < startRow + size; i++) {
 			for (int j = startCol; j < startCol + size; j++) {
 				map[i][j] = 0;
@@ -81,7 +75,7 @@ public class BOJ17136 {
 		}
 	}
 
-	private static void recover(int startRow, int startCol, int size) {
+	private static void recover(int startRow, int startCol, int size) { // 원상복구
 		for (int i = startRow; i < startRow + size; i++) {
 			for (int j = startCol; j < startCol + size; j++) {
 				map[i][j] = 1;
@@ -89,7 +83,7 @@ public class BOJ17136 {
 		}
 	}
 
-	private static boolean canCover(int row, int col, int size) {
+	private static boolean canCover(int row, int col, int size) { // 덮을 수 있는지 확인
 		if (row + size > 10 || col + size > 10)
 			return false;
 		for (int i = row; i < row + size; i++) {
