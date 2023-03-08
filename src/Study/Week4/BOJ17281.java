@@ -33,6 +33,7 @@ public class BOJ17281 {
 		selected = new int[10];
 		isSelected = new boolean[10];
 		isSelected[1] = true;
+		selected[4] = 1;
 
 		permutation(1);
 		System.out.println(answer);
@@ -41,22 +42,14 @@ public class BOJ17281 {
 
 	public static void permutation(int depth) {
 		if (depth == 10) {
-			System.out.println(Arrays.toString(selected));
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			answer = Math.max(answer, playGame());
 			return;
 		}
+
 		if (depth == 4) {
-			selected[depth] = 1;
 			permutation(depth + 1);
 			return;
 		}
-
 		for (int i = 1; i <= 9; i++) {
 			if (!isSelected[i]) {
 				isSelected[i] = true;
@@ -72,9 +65,10 @@ public class BOJ17281 {
 		int current = 1;
 		Queue<Integer> queue = new ArrayDeque<>();
 		for (int i = 0; i < N; i++) {
+			queue.clear();
 			int outCount = 0;
 			while (outCount < 3) {
-				switch (input[i][current]) {
+				switch (input[i][selected[current]]) {
 				case 0:
 					outCount++;
 					break;
@@ -103,7 +97,7 @@ public class BOJ17281 {
 				}
 
 				current++;
-				if (current > 9) {
+				if (current >= 10) {
 					current = 1;
 				}
 			}
