@@ -17,7 +17,7 @@ public class BOJ11727 {
 		dp[0] = 1;
 		dp[1] = 1;
 		for (int i = 2; i <= N; i++) {
-			dp[i] = (dp[i - 1] + 2 * dp[i - 2]) % 10007;
+			dp[i] = (dp[i - 1] + 2 * dp[i - 2]) % 10007;	// i-1개의 각 경우의 수에 한개짜리 추가 + i-2개의 각 경우의수에 2개짜리 추가(2개 짜리 놓는 방법은 2개임)
 		}
 		System.out.println(dp[N]);
 
