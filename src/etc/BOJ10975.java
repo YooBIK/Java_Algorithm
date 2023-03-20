@@ -23,15 +23,12 @@ public class BOJ10975 {
 		for (int i = 0; i < N; i++) {
 			numbers.add(Integer.parseInt(bufferedReader.readLine()));
 		}
-
-		System.out.println("!@#$!@#$");
 		List<Integer> sortedList = new ArrayList<>(numbers);
 		Collections.sort(sortedList);
 		HashMap<Integer, Integer> hashMap = new HashMap<>();
 		for (int i = 0; i < sortedList.size(); i++) {
 			hashMap.put(sortedList.get(i), i);
 		}
-		System.out.println(sortedList);
 		List<int[]> resultList = new ArrayList<>();
 		for (int i = 0; i < numbers.size(); i++) {
 			int index = hashMap.get(numbers.get(i));
