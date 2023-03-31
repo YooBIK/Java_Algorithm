@@ -40,7 +40,7 @@ public class Main_1194_G1_달이차오른다가자_유병익2 {
 		}
 
 		map = new char[R][C];
-		visit = new int[R][C][64];
+		visit = new int[R][C][65];
 
 		int startRow = -1;
 		int startCol = -1;
@@ -65,7 +65,7 @@ public class Main_1194_G1_달이차오른다가자_유병익2 {
 		if (answer == Integer.MAX_VALUE) {
 			System.out.println(-1);
 		} else {
-			System.out.println(answer);
+			System.out.println(answer - 1);
 		}
 	}
 
@@ -80,32 +80,41 @@ public class Main_1194_G1_달이차오른다가자_유병익2 {
 			int curCol = cur[1];
 			int curKey = cur[2];
 
+			if (map[curRow][curCol] == '1') {
+				answer = Math.min(answer, visit[curRow][curCol][curKey]);
+			}
+
 			for (int i = 0; i < 4; i++) {
 				int newRow = curRow + dirRow[i];
 				int newCol = curCol + dirCol[i];
-				if (boundaryCheck(newRow, newCol)) {
-					if (map[newRow][newCol] >= 'a' && map[newRow][newCol] <= 'f') {
-						char key = map[newRow][newCol];
-						char door = Character.toUpperCase(key);
-
-						if (((1 << (key - 'a')) & curKey) == 0) {
-							visit[newRow][newCol][((1 << (key - 'a')) + curKey)] = visit[curRow][curCol][curKey] + 1;
-							queue.offer(new int[] { newRow, newCol, ((1 << (key - 'a')) + curKey) });
+				if (boundaryCheck(newRow, newCol) && visit[newRow][newCol][curKey] == 0) {
+					if (map[newRow][newCol] >= 'A' && map[newRow][newCol] <= 'F') {
+						if (((1 << (map[newRow][newCol] - 'A')) & curKey) != 0) {
+							visit[newRow][newCol][curKey] = visit[curRow][curCol][curKey] + 1;
+							queue.offer(new int[] { newRow, newCol, curKey });
 						}
-
-					} else {
+					} else if ((map[newRow][newCol] >= 'a' && map[newRow][newCol] <= 'f')) {
+						char key = map[newRow][newCol];
+						if (((1 << (key - 'a')) & curKey) == 0) {
+							int newKey = (1 << (key - 'a')) + curKey;
+							visit[newRow][newCol][newKey] = visit[curRow][curCol][curKey] + 1;
+							queue.offer(new int[] { newRow, newCol, newKey });
+						} else {
+							visit[newRow][newCol][curKey] = visit[curRow][curCol][curKey] + 1;
+							queue.offer(new int[] { newRow, newCol, curKey });
+						}
+					} else if (map[newRow][newCol] == '.' || map[newRow][newCol] == '1') {
 						visit[newRow][newCol][curKey] = visit[curRow][curCol][curKey] + 1;
 						queue.offer(new int[] { newRow, newCol, curKey });
 					}
 				}
+
 			}
 		}
-
 	}
 
 	private static boolean boundaryCheck(int newRow, int newCol) {
-		return newRow >= 0 && newRow < R && newCol >= 0 && newCol < C && (map[newRow][newCol] == '.'
-				|| (map[newRow][newCol] >= 'a' && map[newRow][newCol] <= 'f') || map[newRow][newCol] == '1');
+		return newRow >= 0 && newRow < R && newCol >= 0 && newCol < C;
 	}
 
 }
