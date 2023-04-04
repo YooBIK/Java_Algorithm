@@ -1,4 +1,4 @@
-package Class.Live;
+package Class.Live.ShortestPath;
 
 import java.io.BufferedReader;
 import java.io.IOException;

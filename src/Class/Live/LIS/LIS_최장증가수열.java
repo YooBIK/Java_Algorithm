@@ -1,4 +1,4 @@
-package Class.Live;
+package Class.Live.LIS;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
