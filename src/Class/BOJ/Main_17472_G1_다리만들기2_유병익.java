@@ -42,9 +42,7 @@ public class Main_17472_G1_다리만들기2_유병익 {
 		}
 
 		makeIslandMap();
-
 		dfs(0, 0);
-
 		if (answer == Integer.MAX_VALUE) {
 			System.out.println(-1);
 		} else {
@@ -85,7 +83,6 @@ public class Main_17472_G1_다리만들기2_유병익 {
 	}
 
 	private static void dfs(int startRow, int startCol) {
-
 		if (checkParents()) {
 			int cost = 0;
 			for (int i = 0; i < R; i++) {
@@ -100,7 +97,6 @@ public class Main_17472_G1_다리만들기2_유병익 {
 		}
 
 		for (int i = startRow; i < R; i++) {
-
 			for (int j = 0; j < C; j++) {
 				if (map[i][j] <= 0) {
 					int[] rowCheck = canBuildRow(i, j);
@@ -119,12 +115,10 @@ public class Main_17472_G1_다리만들기2_유병익 {
 
 			}
 		}
-
 	}
 
 	private static int[] canBuildRow(int curRow, int curCol) {
 		int length = 0;
-
 		int upIsland = 0;
 		int downIsland = 0;
 		for (int i = curRow; i >= 0; i--) {
@@ -153,7 +147,6 @@ public class Main_17472_G1_다리만들기2_유병익 {
 	}
 
 	private static int[] canBuildCol(int curRow, int curCol) {
-
 		int length = 0;
 
 		int leftIsland = 0;
@@ -166,6 +159,7 @@ public class Main_17472_G1_다리만들기2_유병익 {
 			}
 			length++;
 		}
+
 		for (int i = curCol + 1; i < C; i++) {
 			if (map[curRow][i] == 1) {
 				rightIsland = islandMap[curRow][i];
@@ -184,7 +178,6 @@ public class Main_17472_G1_다리만들기2_유병익 {
 	}
 
 	private static void buildBridgeRow(int curRow, int curCol, int upRoot, int downRoot) {
-
 		for (int i = curRow; i >= 0; i--) {
 			if (map[i][curCol] == 1) {
 				break;
@@ -193,6 +186,7 @@ public class Main_17472_G1_다리만들기2_유병익 {
 			}
 
 		}
+
 		for (int i = curRow + 1; i < R; i++) {
 			if (map[i][curCol] == 1) {
 				break;
@@ -200,11 +194,11 @@ public class Main_17472_G1_다리만들기2_유병익 {
 				map[i][curCol]--;
 			}
 		}
+
 		parents[upRoot] = downRoot;
 	}
 
 	private static void buildBridgeCol(int curRow, int curCol, int leftRoot, int rightRoot) {
-
 		for (int i = curCol; i >= 0; i--) {
 			if (map[curRow][i] == 1) {
 				break;
@@ -212,6 +206,7 @@ public class Main_17472_G1_다리만들기2_유병익 {
 				map[curRow][i]--;
 			}
 		}
+
 		for (int i = curCol + 1; i < C; i++) {
 			if (map[curRow][i] == 1) {
 				break;
@@ -219,11 +214,11 @@ public class Main_17472_G1_다리만들기2_유병익 {
 				map[curRow][i]--;
 			}
 		}
+
 		parents[leftRoot] = rightRoot;
 	}
 
 	private static void recoverRow(int curRow, int curCol, int upRoot, int downRoot) {
-
 		for (int i = curRow; i >= 0; i--) {
 			if (map[i][curCol] == 1) {
 				break;
@@ -231,6 +226,7 @@ public class Main_17472_G1_다리만들기2_유병익 {
 				map[i][curCol]++;
 			}
 		}
+
 		for (int i = curRow + 1; i < R; i++) {
 			if (map[i][curCol] == 1) {
 				break;
@@ -250,6 +246,7 @@ public class Main_17472_G1_다리만들기2_유병익 {
 				map[curRow][i]++;
 			}
 		}
+
 		for (int i = curCol + 1; i < C; i++) {
 			if (map[curRow][i] == 1) {
 				break;
@@ -257,8 +254,8 @@ public class Main_17472_G1_다리만들기2_유병익 {
 				map[curRow][i]++;
 			}
 		}
+
 		parents[leftRoot] = leftRoot;
-		parents[rightRoot] = rightRoot;
 	}
 
 	private static boolean checkParents() {
@@ -279,7 +276,6 @@ public class Main_17472_G1_다리만들기2_유병익 {
 	}
 
 	private static boolean boundaryCheck(int newRow, int newCol) {
-		// TODO Auto-generated method stub
 		return newRow >= 0 && newRow < R && newCol >= 0 && newCol < C;
 	}
 
