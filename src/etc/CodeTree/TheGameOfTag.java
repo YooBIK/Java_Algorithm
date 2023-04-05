@@ -7,256 +7,178 @@ import java.util.*;
 
 public class TheGameOfTag {
 
-    static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-    static StringTokenizer stringTokenizer;
+	static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+	static StringTokenizer stringTokenizer;
 
-    static final int RUNNER = 2;
-    static final int TAGGER = 1;
-    static final int CLOCK = 1;
-    static final int REVERSE = 0;
+	static int N, M, H, K;
 
-    static int N, M, H, K;
+	static boolean[][] taggerMap;
+	static boolean[][] treeMap;
+	static int[][] runnerMap;
 
-    static int[][] map;
-    static boolean[][] visit;
-    static boolean[][] tree;
+	static boolean[][] visit;
 
+	static int taggerRow;
+	static int taggerCol;
+	static int taggerDir;
+	static boolean moveFlag = false; // false -> 시계방향 , true -> 반시계방향
 
-    // 우 하 좌 상
-    static int[] dirRow = {0, 1, 0, -1};  // up down -> row col , left right -> col row
-    static int[] dirCol = {1, 0, -1, 0};
+	// 상 우 하 좌
+	static int[] dirRow = { -1, 0, 1, 0 };
+	static int[] dirCol = { 0, 1, 0, -1 };
 
+	static Queue<int[]> runnerQueue = new ArrayDeque<>();
+	static int answer = 0;
 
-    static int[] clockRow = {-1, 0, 1, 0};
-    static int[] clockCol = {0, 1, 0, -1};
+	public static void main(String[] args) throws IOException {
 
-    static int[] reverseClockRow = {1, 0, -1, 0};
-    static int[] reverseClockCol = {0, 1, 0, -1};
+		stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+		N = Integer.parseInt(stringTokenizer.nextToken()); // N*N 사이즈
+		M = Integer.parseInt(stringTokenizer.nextToken()); // 도망자 수
+		H = Integer.parseInt(stringTokenizer.nextToken()); // 나무 갯수
+		K = Integer.parseInt(stringTokenizer.nextToken()); // 게임 진행 시간
 
-    // row, col, dir, 현재 해당 방향 이동 횟수, 해당 방향 최대 이동 횟수, 방향 전환 횟수
-    static int[] curTaggerInfo = new int[6];
+		taggerMap = new boolean[N][N];
+		treeMap = new boolean[N][N];
+		runnerMap = new int[N][N];
 
-    static int answer = 0;
+		taggerMap[N / 2][N / 2] = true;
 
+		for (int i = 0; i < M; i++) {
+			stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+			int row = Integer.parseInt(stringTokenizer.nextToken()) - 1;
+			int col = Integer.parseInt(stringTokenizer.nextToken()) - 1;
+			int dir = Integer.parseInt(stringTokenizer.nextToken()); // 1 이면 좌우(우), 2이면 상하(하)
 
-    static Queue<int[]> runnerQueue = new ArrayDeque<>();
+			runnerMap[row][col]++;
+			runnerQueue.offer(new int[] { row, col, dir });
+		}
 
-    public static void main(String[] args) throws IOException {
+		for (int i = 0; i < H; i++) {
+			stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+			int treeRow = Integer.parseInt(stringTokenizer.nextToken()) - 1;
+			int treeCol = Integer.parseInt(stringTokenizer.nextToken()) - 1;
+			treeMap[treeRow][treeCol] = true;
+		}
+		playGame();
+		System.out.println(answer);
+	}
 
-        stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-        N = Integer.parseInt(stringTokenizer.nextToken());
-        M = Integer.parseInt(stringTokenizer.nextToken());
-        H = Integer.parseInt(stringTokenizer.nextToken());
-        K = Integer.parseInt(stringTokenizer.nextToken());
+	private static void playGame() {
+		taggerRow = N / 2;
+		taggerCol = N / 2;
+		taggerDir = 0;
+		visit = new boolean[N][N];
+		visit[taggerRow][taggerCol] = true;
 
-        map = new int[N][N];
-        map[N / 2][N / 2] = TAGGER;
-        tree = new boolean[N][N];
-        for (int i = 0; i < M; i++) {
-            stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-            int row = Integer.parseInt(stringTokenizer.nextToken()) - 1;
-            int col = Integer.parseInt(stringTokenizer.nextToken()) - 1;
-            int dir = Integer.parseInt(stringTokenizer.nextToken()) - 1;    // 0 이면 좌우, 1이면 상하
+		for (int i = 1; i <= K; i++) {
+			moveRunner();
+			moveTagger();
+			catchRunner(i);
+		}
+	}
 
-            map[row][col] = RUNNER;
-            runnerQueue.offer(new int[]{row, col, dir});
-        }
+	private static void moveTagger() {
+		// 일단 보는 방향으로 이동
+		taggerMap[taggerRow][taggerCol] = false;
+		taggerRow += dirRow[taggerDir];
+		taggerCol += dirCol[taggerDir];
+		taggerMap[taggerRow][taggerCol] = true;
+		visit[taggerRow][taggerCol] = !moveFlag;
 
-        for (int i = 0; i < H; i++) {
-            stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-            int treeRow = Integer.parseInt(stringTokenizer.nextToken()) - 1;
-            int treeCol = Integer.parseInt(stringTokenizer.nextToken()) - 1;
-            tree[treeRow][treeCol] = true;
-        }
+		// 끝점이면 180도 회전 & 회전 방향 변경
+		// false -> 시계방향 , true -> 반시계방향
+		if ((taggerRow == 0 && taggerCol == 0) || (taggerRow == N / 2 && taggerCol == N / 2)) {
+			taggerDir = (taggerDir + 2) % 4;
+			moveFlag = !moveFlag;
+			visit[taggerRow][taggerCol] = !moveFlag;
+			return;
+		}
 
-        playGame();
-        System.out.println(answer);
+		int nextRow = taggerRow;
+		int nextCol = taggerCol;
+		int nextDir = taggerDir;
+		if (!moveFlag) { // 시계방향
+			nextDir = (taggerDir + 1) % 4;
+			nextRow += dirRow[nextDir];
+			nextCol += dirCol[nextDir];
+			if (visit[nextRow][nextCol] == moveFlag) {
+				taggerDir = nextDir;
+			}
 
-    }
+		} else { // 반시계 방향
+			nextRow += dirRow[nextDir];
+			nextCol += dirCol[nextDir];
+			if (!boundaryCheck(nextRow, nextCol) || visit[nextRow][nextCol] != moveFlag) {
+				taggerDir = (taggerDir + 3) % 4;
+			}
+		}
+	}
 
-    private static void playGame() {
-        int curTime = 0;
+	private static boolean boundaryCheck(int nextRow, int nextCol) {
+		return nextRow >= 0 && nextRow < N && nextCol >= 0 && nextCol < N;
+	}
 
-        visit = new boolean[N][N];
-        curTaggerInfo[0] = N / 2;
-        curTaggerInfo[1] = N / 2;
-        curTaggerInfo[2] = 0;
-        curTaggerInfo[3] = CLOCK;
+	private static void moveRunner() {
 
-        while (curTime < K) {
+		int size = runnerQueue.size();
+		for (int i = 0; i < size; i++) {
+			int[] curRunnerInfo = runnerQueue.poll();
+			int curRow = curRunnerInfo[0];
+			int curCol = curRunnerInfo[1];
+			int curDir = curRunnerInfo[2];
 
-            System.out.println(curTime);
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    System.out.print(map[i][j] + " ");
-                }
-                System.out.println();
-            }
-            System.out.println();
+			if (runnerMap[curRow][curCol] == 0) {
+				continue;
+			}
 
+			int dist = Math.abs(curRow - taggerRow) + Math.abs(curCol - taggerCol);
+			if (dist > 3) {
+				runnerQueue.offer(curRunnerInfo);
+				continue;
+			}
+			int nextRow = curRow + dirRow[curDir];
+			int nextCol = curCol + dirCol[curDir];
+			int nextDir = curDir;
+			if (boundaryCheck(nextRow, nextCol)) { // 범위 안에 있음
+				if (nextRow == taggerRow && nextCol == taggerCol) { // 해당 칸에 술래 있음
+					nextRow = curRow;
+					nextCol = curCol;
+				}
+			} else { // 범위 밖임
+				nextDir = (curDir + 2) % 4;
+				nextRow = curRow + dirRow[nextDir];
+				nextCol = curCol + dirCol[nextDir];
+				if (nextRow == taggerRow && nextCol == taggerCol) {
+					nextRow = curRow;
+					nextCol = curCol;
+				}
+			}
 
-            moveRunner();
+			curRunnerInfo[0] = nextRow;
+			curRunnerInfo[1] = nextCol;
+			curRunnerInfo[2] = nextDir;
 
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    System.out.print(map[i][j] + " ");
-                }
-                System.out.println();
-            }
-            System.out.println();
-            if (curTaggerInfo[3] == CLOCK) {
-                answer += moveTagger(curTime);
-            } else {
-                answer += moveTaggerReverse(curTime);
-            }
+			runnerMap[curRow][curCol]--;
+			runnerMap[curRunnerInfo[0]][curRunnerInfo[1]]++;
+			runnerQueue.offer(curRunnerInfo);
+		}
+	}
 
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    System.out.print(map[i][j] + " ");
-                }
-                System.out.println();
-            }
-            System.out.println();
+	private static void catchRunner(int curTime) {
+		int count = 0;
 
-            curTime++;
-            answer += catchRunner(curTime);
-        }
-    }
+		for (int i = 0; i < 3; i++) {
+			int catchRow = taggerRow + i * dirRow[taggerDir];
+			int catchCol = taggerCol + i * dirCol[taggerDir];
 
-
-    private static int catchRunner(int curTime) {
-
-        int score = 0;
-
-        int curRow = curTaggerInfo[0];
-        int curCol = curTaggerInfo[1];
-        int curDir = curTaggerInfo[2];
-        int curState = curTaggerInfo[3];
-
-        for (int i = 0; i < 2; i++) {
-            if (curState == CLOCK) {
-                curRow += clockRow[curDir];
-                curCol += clockCol[curDir];
-            } else {
-                curRow += reverseClockRow[curDir];
-                curCol += reverseClockCol[curDir];
-            }
-            if (curRow >= 0 && curRow < N && curCol >= 0 && curCol < N && map[curRow][curCol] == RUNNER && !tree[curRow][curCol]) {
-                map[curRow][curCol] = 0;
-                score += curTime;
-            }
-        }
-        return score;
-
-    }
-
-    private static int moveTagger(int curTime) {
-
-        int score = 0;
-
-        int curRow = curTaggerInfo[0];
-        int curCol = curTaggerInfo[1];
-        int curDir = curTaggerInfo[2];
-
-        int newRow = curRow + clockRow[curDir];
-        int newCol = curCol + clockCol[curDir];
-
-        if (map[newRow][newCol] == RUNNER && !tree[newRow][newCol]) {
-            score += curTime;
-        }
-
-        map[curRow][curCol] = 0;
-        map[newRow][newCol] = TAGGER;
-
-        curTaggerInfo[0] = newRow;
-        curTaggerInfo[1] = newCol;
-
-        visit[newRow][newCol] = true;
-
-        int nextDir = (curDir + 1) % 4;
-        newRow += clockRow[nextDir];
-        newCol += clockCol[nextDir];
-
-        if (!visit[newRow][newCol]) {
-            curTaggerInfo[2] = nextDir;
-        }
-
-        if (curTaggerInfo[0] == 0 && curTaggerInfo[1] == 0) {
-            visit = new boolean[N][N];
-            visit[0][0] = true;
-            curTaggerInfo[3] = REVERSE;
-            curTaggerInfo[2] = 0;
-        }
-        return score;
-    }
-
-    private static int moveTaggerReverse(int curTime) {
-
-        int score = 0;
-
-        int curRow = curTaggerInfo[0];
-        int curCol = curTaggerInfo[1];
-        int curDir = curTaggerInfo[2];
-
-        int newRow = curRow + reverseClockRow[curDir];
-        int newCol = curCol + reverseClockCol[curDir];
-
-        if (map[newRow][newCol] == RUNNER && !tree[newRow][newCol]) {
-            score += curTime;
-        }
-
-        map[curRow][curCol] = 0;
-        map[newRow][newCol] = TAGGER;
-
-        curTaggerInfo[0] = newRow;
-        curTaggerInfo[1] = newCol;
-
-        newRow += reverseClockRow[curDir];
-        newCol += reverseClockCol[curDir];
-        if (newRow < 0 || newRow >= N || newCol < 0 || newCol >= N || visit[newRow][newCol]) {
-            curTaggerInfo[2] = (curDir + 1) % 4;
-        }
-
-        if (curTaggerInfo[0] == N / 2 && curTaggerInfo[1] == N / 2) {
-            visit = new boolean[N][N];
-            visit[N / 2][N / 2] = true;
-            curTaggerInfo[3] = CLOCK;
-            curTaggerInfo[2] = 0;
-        }
-        return score;
-    }
-
-    private static void moveRunner() {
-
-        int size = runnerQueue.size();
-
-        int[][] temp = new int[N][N];
-        temp[curTaggerInfo[0]][curTaggerInfo[1]] = TAGGER;
-
-        for (int i = 0; i < size; i++) {
-            int[] curRunnerInfo = runnerQueue.poll();
-            if (map[curRunnerInfo[0]][curRunnerInfo[1]] != RUNNER) {    // 직전 TIME 에 TAGGER 한테 잡힌 경우
-                continue;
-            }
-
-            int newRow = curRunnerInfo[0] + dirRow[curRunnerInfo[2]];
-            int newCol = curRunnerInfo[1] + dirCol[curRunnerInfo[2]];
-            if (newRow < 0 || newRow >= N || newCol < 0 || newCol >= N) {
-                int newDir = (curRunnerInfo[2] + 2) % 4;
-                newRow = curRunnerInfo[0] + dirRow[newDir];
-                newCol = curRunnerInfo[1] + dirCol[newDir];
-                curRunnerInfo[2] = newDir;
-            }
-
-            if (map[newRow][newCol] != TAGGER) {
-                curRunnerInfo[0] = newRow;
-                curRunnerInfo[1] = newCol;
-            }
-            temp[curRunnerInfo[0]][curRunnerInfo[1]] = RUNNER;
-            runnerQueue.offer(curRunnerInfo);
-        }
-        map = temp;
-    }
-
-
+			if (boundaryCheck(catchRow, catchCol)) {
+				if (runnerMap[catchRow][catchCol] > 0 && !treeMap[catchRow][catchCol]) {
+					count += runnerMap[catchRow][catchCol];
+					runnerMap[catchRow][catchCol] = 0;
+				}
+			}
+		}
+		answer += count * curTime;
+	}
 }
