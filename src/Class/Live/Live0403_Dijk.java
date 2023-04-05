@@ -44,8 +44,25 @@ public class Live0403_Dijk {
 
 		boolean[] visit = new boolean[V];
 		Edge[] D = new Edge[V];
-		
-		
+		for (int i = 0; i < V; i++) {
+			if (i == 0) {
+				D[i] = new Edge(i, 0);
+			} else {
+				D[i] = new Edge(i, Integer.MAX_VALUE);
+			}
+			pq.add(D[i]);
+		}
+
+		while (!pq.isEmpty()) {
+			Edge now = pq.poll();
+			for (Edge next : adjList[now.vertex]) {
+				if (D[next.vertex].weight > D[now.vertex].weight + next.weight) {
+					D[next.vertex].weight = D[now.vertex].weight + next.weight;
+					pq.remove(D[next.vertex]);
+					pq.add(D[next.vertex]);
+				}
+			}
+		}
 
 	}
 
