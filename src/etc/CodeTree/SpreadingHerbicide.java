@@ -10,10 +10,12 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 /**
- * 순서 1. 나무의 성장 (인접한 나무의 개수만큼 커진다. 동시에 이루어진다.) 2. 나무의 번식 (다른나무, 벽, 제초제 제외 가능,
- * 번식한 곳의 값 = (현재크기 / 번식가능영역)) 3. 제초제 살포 (가장 큰 값을 얻을 수 있는 곳에 살포(같으면 행, 같으면 열
- * 작은순), 모든 대각선 방향으로 k만큼 제거, 해당 위치는 c년동안 나무가 자랄 수 없음)
- * 
+ * 순서
+ * 1. 나무의 성장 (인접한 나무의 개수만큼 커진다. 동시에 이루어진다.)
+ * 2. 나무의 번식 (다른나무, 벽, 제초제 제외 가능, 번식한 곳의 값 = (현재크기 / 번식가능영역))
+ * 3. 복구
+ * 4. 제초제 살포 (가장 큰 값을 얻을 수 있는 곳에 살포(같으면 행, 같으면 열 작은순), 모든 대각선 방향으로 k만큼 제거, 해당 위치는 c년동안 나무가 자랄 수 없음)
+ * 	// 벽 제외 모든 위치에 살포할 수 있음
  */
 
 public class SpreadingHerbicide {
@@ -62,118 +64,52 @@ public class SpreadingHerbicide {
 	private static void start() {
 		int curTime = 0;
 		while (curTime < M) {
-			
-			System.out.println(curTime);
-			System.out.println("start");
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (map[i][j] == WALL) {
-						System.out.print("X\t");
-					} else {
-						System.out.print(map[i][j] + "\t");
-					}
-				}
-				System.out.println();
-			}
-			System.out.println();
-
 			growUpTrees();
-
-			System.out.println("after grow");
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (map[i][j] == WALL) {
-						System.out.print("X\t");
-					} else {
-						System.out.print(map[i][j] + "\t");
-					}
-				}
-				System.out.println();
-			}
-			System.out.println();
-
 			spreadTrees();
-
-			System.out.println("after spread");
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (map[i][j] == WALL) {
-						System.out.print("X\t");
-					} else {
-						System.out.print(map[i][j] + "\t");
-					}
-				}
-				System.out.println();
-			}
-			System.out.println();
-
-			kill(curTime);
-
-			System.out.println("after kill");
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (map[i][j] == WALL) {
-						System.out.print("X\t");
-					} else {
-						System.out.print(map[i][j] + "\t");
-					}
-				}
-				System.out.println();
-			}
-			System.out.println();
-
+			restore();
+			kill();
 			curTime++;
-			restore(curTime);
-			System.out.println("after restore");
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (map[i][j] == WALL) {
-						System.out.print("X\t");
-					} else {
-						System.out.print(map[i][j] + "\t");
-					}
-				}
-				System.out.println();
-			}
-			System.out.println();
-
 		}
 		System.out.println(answer);
-
 	}
 
-	private static void restore(int curTime) {
+	private static void restore() {
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				if (map[i][j] == -curTime)
-					map[i][j] = 0;
+				if (map[i][j] < 0)
+					map[i][j]++;
 			}
 		}
 	}
 
-	private static void kill(int cutTime) {
+	private static void kill() {
 		int[] curDropPosition = getPosition();
 		if (curDropPosition != null) {
-			drop(curDropPosition[1], curDropPosition[2], cutTime);
+			drop(curDropPosition[1], curDropPosition[2]);
 		}
 	}
 
-	private static void drop(int row, int col, int curTime) {
+	private static void drop(int row, int col) {
+
+		if(map[row][col] <= 0){
+			map[row][col] = -C;
+			return;
+		}
 
 		answer += map[row][col];
-		map[row][col] = -(curTime + C + 1);
+		map[row][col] = -C;
 
 		for (int i = 1; i <= K; i++) {
 			if (!boundaryCheck(row - i, col - i) || map[row - i][col - i] == WALL) {
 				break;
 			}
 			if (map[row - i][col - i] <= 0) {
-				map[row - i][col - i] = -(curTime + C + 1);
+				map[row - i][col - i] = -C;
 				break;
 			}
 
 			answer += map[row - i][col - i];
-			map[row - i][col - i] = -(curTime + C + 1);
+			map[row - i][col - i] = -C;
 		}
 
 		// 오른쪽 위 방향
@@ -182,11 +118,11 @@ public class SpreadingHerbicide {
 				break;
 			}
 			if (map[row - i][col + i] <= 0) {
-				map[row - i][col + i] = -(curTime + C + 1);
+				map[row - i][col + i] = -C;
 				break;
 			}
 			answer += map[row - i][col + i];
-			map[row - i][col + i] = -(curTime + C + 1);
+			map[row - i][col + i] = -C;
 
 		}
 
@@ -196,11 +132,11 @@ public class SpreadingHerbicide {
 				break;
 			}
 			if (map[row + i][col + i] <= 0) {
-				map[row + i][col + i] = -(curTime + C + 1);
+				map[row + i][col + i] = -C;
 				break;
 			}
 			answer += map[row + i][col + i];
-			map[row + i][col + i] = -(curTime + C + 1);
+			map[row + i][col + i] = -C;
 
 		}
 
@@ -210,11 +146,11 @@ public class SpreadingHerbicide {
 				break;
 			}
 			if (map[row + i][col - i] <= 0) {
-				map[row + i][col - i] = -(curTime + C + 1);
+				map[row + i][col - i] = -C;
 				break;
 			}
 			answer += map[row + i][col - i];
-			map[row + i][col - i] = -(curTime + C + 1);
+			map[row + i][col - i] = -C;
 		}
 	}
 
@@ -225,7 +161,7 @@ public class SpreadingHerbicide {
 
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				if (map[i][j] > 0 && map[i][j] != WALL) {
+				if (map[i][j] != WALL) {
 					pq.offer(new int[] { getKillCount(i, j), i, j });
 				}
 			}
@@ -234,10 +170,15 @@ public class SpreadingHerbicide {
 	}
 
 	private static int getKillCount(int row, int col) {
-		int count = 0;
+
+		if(map[row][col] <= 0){
+			return 0;
+		}
+
+		int count = map[row][col];
 		// 왼쪽 위 방향
 		for (int i = 1; i <= K; i++) {
-			if (!boundaryCheck(row - i, col - i) || map[row - i][col - i] == WALL || map[row - i][col - i] == 0) {
+			if (!boundaryCheck(row - i, col - i) || map[row - i][col - i] == WALL || map[row - i][col - i] <= 0) {
 				break;
 			}
 			count += map[row - i][col - i];
@@ -245,7 +186,7 @@ public class SpreadingHerbicide {
 
 		// 오른쪽 위 방향
 		for (int i = 1; i <= K; i++) {
-			if (!boundaryCheck(row - i, col + i) || map[row - i][col + i] == WALL || map[row - i][col + i] == 0) {
+			if (!boundaryCheck(row - i, col + i) || map[row - i][col + i] == WALL || map[row - i][col + i] <= 0) {
 				break;
 			}
 			count += map[row - i][col + i];
@@ -253,7 +194,7 @@ public class SpreadingHerbicide {
 
 		// 오른쪽 아래 방향
 		for (int i = 1; i <= K; i++) {
-			if (!boundaryCheck(row + i, col + i) || map[row + i][col + i] == WALL || map[row + i][col + i] == 0) {
+			if (!boundaryCheck(row + i, col + i) || map[row + i][col + i] == WALL || map[row + i][col + i] <= 0) {
 				break;
 			}
 			count += map[row + i][col + i];
@@ -261,12 +202,12 @@ public class SpreadingHerbicide {
 
 		// 왼쪽 아래 방향
 		for (int i = 1; i <= K; i++) {
-			if (!boundaryCheck(row + i, col - i) || map[row + i][col - i] == WALL || map[row + i][col - i] == 0) {
+			if (!boundaryCheck(row + i, col - i) || map[row + i][col - i] == WALL || map[row + i][col - i] <= 0) {
 				break;
 			}
 			count += map[row + i][col - i];
 		}
-		return count + map[row][col];
+		return count;
 	}
 
 	private static void spreadTrees() {
