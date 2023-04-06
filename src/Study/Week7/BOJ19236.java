@@ -5,6 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+/**
+ * 풀이 방법
+ *  1. 모든 물고기들의 (번호 : 좌표)를 해쉬 맵에 저장해둔다.
+ *  2. 3차원 맵을 사용해 [x][y][0] 에는 물고기 번호, [x][y][1] 에는 방향 을 넣어둔다.
+ *  3. 해쉬맵 Key(물고기 번호) - Set을 정렬해서 순서대로 문제 조건대로 이동시킨다. 
+ *  4. 상어를 이동시킨다. 재귀를 통해 먹을 수 있는 모든 경우를 탐색한다. (이동할 수 있는 칸이 없으면 종료)
+ *  3,4 반복
+ */
+
 public class BOJ19236 {
 
     static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -31,10 +40,10 @@ public class BOJ19236 {
             }
         }
 
-        int curValue = map[0][0][0];
-        positionMap.remove(map[0][0][0]);
-        map[0][0][0] = SHARK;
-        int[] sharkInfo = new int[]{0, 0};
+        int curValue = map[0][0][0];		// 시작 점수는 0,0에 있는 물고기의 번호
+        positionMap.remove(map[0][0][0]);	// 0,0에 있는 물고기를 해시맵에서 제거한다.
+        map[0][0][0] = SHARK;				// 0,0을 상어로 표시
+        int[] sharkInfo = new int[]{0, 0};	// 현재 상어 정보 저장
 
         play(copyMap(map), sharkInfo, curValue, positionMap);
         System.out.println(answer);
@@ -47,7 +56,7 @@ public class BOJ19236 {
 
 
         for (Integer fishNumber : fishList) {
-            moveFish(curMap, fishNumber, positionMap);
+            moveFish(curMap, fishNumber, positionMap);	// 물고기 이동!
         }
 
         int sharkRow = sharkInfo[0];
@@ -98,8 +107,8 @@ public class BOJ19236 {
         int curCol = curFishInfo[1];
         int curDir = curMap[curRow][curCol][1];
 
-        for (int i = curDir; i < curDir + 8; i++) {
-            int newRow = curRow + dirRow[i % 8];
+        for (int i = curDir; i < curDir + 8; i++) {	// 8방 체크 
+            int newRow = curRow + dirRow[i % 8];	// 
             int newCol = curCol + dirCol[i % 8];
             if (isValid(curMap, newRow, newCol)) {
                 if (curMap[newRow][newCol][0] == 0) {
