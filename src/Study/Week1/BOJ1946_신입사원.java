@@ -38,7 +38,7 @@ class ScoreInfo {
     }
 }
 
-public class BOJ1946 {
+public class BOJ1946_신입사원 {
     static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
     static StringTokenizer stringTokenizer;
     static StringBuilder stringBuilder = new StringBuilder();

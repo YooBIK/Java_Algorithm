@@ -27,7 +27,7 @@ class Pair implements Comparable<Pair> {
 
 }
 
-public class BOJ1931 {
+public class BOJ1931_회의실배정 {
 
     static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
     static StringTokenizer stringTokenizer;
