@@ -1,4 +1,4 @@
-package Study.Week7;
+package Study.Week7_Week8;
 
 import java.io.BufferedReader;
 import java.io.IOException;
