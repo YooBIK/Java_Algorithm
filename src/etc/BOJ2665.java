@@ -47,7 +47,7 @@ public class BOJ2665 {
         while (!queue.isEmpty()) {
             int[] curInfo = queue.poll();
 
-            if (curInfo[2] > answer) continue;
+            if (curInfo[2] >= answer) continue;
 
             if (curInfo[0] == N - 1 && curInfo[1] == N - 1) {
                 answer = curInfo[2];
